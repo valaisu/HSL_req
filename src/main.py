@@ -172,7 +172,8 @@ def routes_graphical_representation(data, bar_height: int = 30, bar_medium: int 
     time_window = last_arrival - now  # in seconds
     element_counter = 0
     boxes = []
-    color_dict = {'WALK': 'grey', 'BUS': 'blue', 'TRAM': 'green', 'RAIL': 'violet'}
+    VIOLET = '#a320bd'
+    color_dict = {'WALK': 'grey', 'BUS': 'blue', 'TRAM': 'green', 'RAIL': VIOLET}
     for instr in instructions:
         for vehicle in instr:
             start_pos_x = padding + window_size*(vehicle[0]-now)/time_window
@@ -186,20 +187,22 @@ def routes_graphical_representation(data, bar_height: int = 30, bar_medium: int 
     #print(boxes)
 
     # draw 
-    img = Image.new('RGB', (450, 300), color='white')
+    LIGHT_BLUE = '#45c3f5'
+    DARK_BLUE = '#219bcc'
+    img = Image.new('RGB', (450, 300), color=DARK_BLUE)
     d = ImageDraw.Draw(img)
     font = ImageFont.truetype("arial.ttf", 12)
     
     # borders
-    d.rounded_rectangle([padding-10, padding-10, padding+10+window_size, len(itineraries)*(bar_height+bar_medium)+bar_height+10], outline='black', width=2, radius=3)
+    d.rounded_rectangle([padding-10, padding-10, padding+10+window_size, len(itineraries)*(bar_height+bar_medium)+bar_height+10], outline=LIGHT_BLUE, fill=LIGHT_BLUE, width=2, radius=3)
 
     # transport
     for b in boxes:
         try:
-            d.rounded_rectangle([b[0], b[1], b[2], b[3]], outline=b[5], width=3, radius=3)
+            d.rounded_rectangle([b[0], b[1], b[2], b[3]], outline=b[5], fill=b[5], width=3, radius=3)
             x_center = int((b[0]+b[2])/2)
             y_center = int((b[1]+b[3])/2)
-            d.text((x_center-len(b[4])*3, y_center-6), b[4], fill=b[5], font=font)
+            d.text((x_center-len(b[4])*3, y_center-6), b[4], fill='white', font=font)
         except ValueError:
             print("B incoming")
             print(b)
@@ -212,7 +215,7 @@ def routes_graphical_representation(data, bar_height: int = 30, bar_medium: int 
         d.text((x_pos, y_pos), text, fill='black', font=font)
         # lines between itineraries
         y = padding+bar_medium*2.5+(bar_height+bar_medium)*i
-        d.line([(padding, y), (padding+window_size, y)], fill='black', width=1)
+        d.line([(padding, y), (padding+window_size, y)], fill=DARK_BLUE, width=1)
 
 
     img.show()
